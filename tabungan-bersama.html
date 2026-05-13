@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabungan Bersama 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --pink-soft: #fce4ec;
+    --pink-light: #f8bbd0;
+    --pink-main: #f48fb1;
+    --pink-deep: #e91e8c;
+    --pink-rose: #ec407a;
+    --pink-blush: #ffd6e7;
+    --pink-cream: #fff0f5;
+    --glass-bg: rgba(255,255,255,0.55);
+    --glass-border: rgba(255,182,213,0.45);
+    --shadow-soft: 0 8px 32px rgba(233,30,140,0.10);
+    --shadow-card: 0 4px 24px rgba(233,30,140,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Quicksand', 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ffe0ef 0%, #fce4ec 30%, #f8bbd0 60%, #ffd6e7 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background blobs */
+  .bg-blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+    animation: blobFloat 8s ease-in-out infinite;
+  }
+  .bg-blob-1 { width: 500px; height: 500px; background: #f48fb1; top: -150px; left: -100px; animation-delay: 0s; }
+  .bg-blob-2 { width: 400px; height: 400px; background: #f8bbd0; bottom: -100px; right: -80px; animation-delay: 2s; }
+  .bg-blob-3 { width: 300px; height: 300px; background: #ffd6e7; top: 40%; left: 50%; animation-delay: 4s; }
+
+  @keyframes blobFloat {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  /* Sparkles */
+  .sparkle { position: fixed; pointer-events: none; z-index: 0; font-size: 1.2rem; animation: sparkleFade 3s ease-in-out infinite; }
+  @keyframes sparkleFade {
+    0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+    50% { opacity: 0.6; transform: scale(1.2) rotate(20deg); }
+  }
+
+  /* Glass card */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1.5px solid var(--glass-border);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Page transitions */
+  .page { display: none; animation: fadeInUp 0.6s cubic-bezier(.22,1,.36,1); }
+  .page.active { display: block; }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Buttons */
+  .btn-pink {
+    background: linear-gradient(135deg, #f48fb1 0%, #e91e8c 100%);
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 32px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(233,30,140,0.25);
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+  }
+  .btn-pink:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(233,30,140,0.35); }
+  .btn-pink:active { transform: scale(0.97); }
+
+  .btn-outline {
+    background: transparent;
+    color: #e91e8c;
+    border: 2px solid #f48fb1;
+    border-radius: 50px;
+    padding: 10px 24px;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+  }
+  .btn-outline:hover { background: #fce4ec; transform: translateY(-1px); }
+
+  /* Input */
+  .input-pink {
+    width: 100%;
+    border: 2px solid #f8bbd0;
+    border-radius: 16px;
+    padding: 12px 18px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.95rem;
+    color: #880e4f;
+    background: rgba(255,255,255,0.7);
+    outline: none;
+    transition: all 0.3s;
+  }
+  .input-pink:focus { border-color: #e91e8c; box-shadow: 0 0 0 3px rgba(233,30,140,0.12); background: white; }
+  .input-pink::placeholder { color: #f8a5c5; }
+
+  /* Progress bar */
+  .progress-track {
+    width: 100%;
+    height: 22px;
+    background: rgba(255,182,213,0.4);
+    border-radius: 50px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 6px rgba(233,30,140,0.1);
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #f48fb1, #e91e8c, #ad1457);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s ease-in-out infinite;
+    transition: width 1.2s cubic-bezier(.22,1,.36,1);
+    position: relative;
+  }
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 0; right: 0; height: 6px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 50px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Member card */
+  .member-card {
+    transition: all 0.3s ease;
+    border-radius: 24px;
+  }
+  .member-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(233,30,140,0.18) !important; }
+
+  /* Destination card */
+  .dest-card {
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .dest-card:hover { transform: translateY(-5px) scale(1.02); }
+  .dest-card img { width: 100%; height: 180px; object-fit: cover; }
+  .dest-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(transparent, rgba(174,13,100,0.75));
+    padding: 24px 16px 14px;
+    color: white;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(233,30,140,0.12);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeInUp 0.3s ease;
+  }
+  .modal-box {
+    width: 90%; max-width: 420px;
+    border-radius: 28px;
+    padding: 32px;
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid var(--glass-border);
+    box-shadow: 0 20px 60px rgba(233,30,140,0.2);
+    animation: fadeInUp 0.4s cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Notification */
+  .notif {
+    position: fixed;
+    top: 24px; right: 24px;
+    background: linear-gradient(135deg, #f48fb1, #e91e8c);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 200;
+    box-shadow: 0 8px 28px rgba(233,30,140,0.3);
+    animation: notifIn 0.4s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes notifIn {
+    from { opacity: 0; transform: translateX(60px) scale(0.9); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+  }
+
+  /* Label */
+  .label-pink {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ad1457;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 300;
+    animation: confettiFall 2.5s ease-in forwards;
+  }
+  @keyframes confettiFall {
+    0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Number input hide arrows */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  input[type=number] { -moz-appearance: textfield; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #fce4ec; }
+  ::-webkit-scrollbar-thumb { background: #f48fb1; border-radius: 10px; }
+
+  /* Header nav */
+  nav { position: sticky; top: 0; z-index: 50; }
+
+  /* Setup steps */
+  .step-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #f8bbd0;
+    transition: all 0.3s;
+  }
+  .step-dot.active { background: #e91e8c; transform: scale(1.4); }
+
+  /* Editable name */
+  .editable-name {
+    border: none; background: transparent;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    color: #880e4f;
+    outline: none;
+    cursor: pointer;
+    border-bottom: 2px dashed transparent;
+    transition: border-color 0.2s;
+    max-width: 130px;
+  }
+  .editable-name:focus { border-bottom-color: #e91e8c; }
+
+  .flower { animation: spin 8s linear infinite; display: inline-block; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* Tab */
+  .tab-btn {
+    padding: 8px 22px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #e91e8c;
+    background: transparent;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, #f48fb1, #e91e8c);
+    color: white;
+    box-shadow: 0 4px 14px rgba(233,30,140,0.25);
+  }
+
+  @media (max-width: 640px) {
+    .modal-box { padding: 24px 20px; }
+    .btn-pink { padding: 11px 24px; font-size: 0.88rem; }
+  }
+</style>
+</head>
+<body>
+<!-- Background decorations -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+<div class="bg-blob bg-blob-3"></div>
+<div class="sparkle" style="top:10%;left:5%;animation-delay:0s">🌸</div>
+<div class="sparkle" style="top:20%;right:8%;animation-delay:1s">✨</div>
+<div class="sparkle" style="top:50%;left:3%;animation-delay:2s">🌷</div>
+<div class="sparkle" style="bottom:20%;right:5%;animation-delay:0.5s">💕</div>
+<div class="sparkle" style="bottom:10%;left:10%;animation-delay:1.5s">🌸</div>
+
+<div style="position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;">
+
+<!-- ===== SETUP PAGE ===== -->
+<div id="page-setup" class="page active">
+  <div class="flex items-center justify-center min-h-screen px-4 py-12">
+    <div class="w-full max-w-lg">
+      <!-- Logo -->
+      <div class="text-center mb-8">
+        <div style="font-size:3.5rem;margin-bottom:8px;">🌸</div>
+        <h1 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:2rem;background:linear-gradient(135deg,#e91e8c,#ad1457);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Tabungan Bersama</h1>
+        <p style="color:#ad1457;font-weight:500;margin-top:4px;font-size:0.95rem;">Wujudkan mimpi bersama, satu langkah kecil setiap hari 💖</p>
+      </div>
+
+      <!-- Step indicators -->
+      <div class="flex justify-center gap-2 mb-8">
+        <div class="step-dot active" id="dot-1"></div>
+        <div class="step-dot" id="dot-2"></div>
+        <div class="step-dot" id="dot-3"></div>
+      </div>
+
+      <!-- Step 1: Nama Tabungan -->
+      <div id="step-1" class="glass rounded-3xl p-8">
+        <div class="text-center mb-6">
+          <span style="font-size:2rem">💝</span>
+          <h2 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.3rem;color:#880e4f;margin-top:8px;">Nama Tabungan</h2>
+          <p style="color:#c2185b;font-size:0.88rem;margin-top:4px;">Beri nama yang manis untuk tabungan kalian!</p>
+        </div>
+        <label class="label-pink">Nama Tabungan ✨</label>
+        <input class="input-pink" id="input-nama-tabungan" type="text" placeholder="cth: Liburan Impian Bersama 🌺" maxlength="50">
+        <div style="margin-top:8px;font-size:0.8rem;color:#f48fb1;text-align:right" id="char-count">0/50</div>
+        <button class="btn-pink w-full mt-6" onclick="goStep2()">Lanjut →</button>
+      </div>
+
+      <!-- Step 2: Target & Anggota -->
+      <div id="step-2" class="glass rounded-3xl p-8" style="display:none">
+        <div class="text-center mb-6">
+          <span style="font-size:2rem">🎯</span>
+          <h2 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.3rem;color:#880e4f;margin-top:8px;">Target & Anggota</h2>
+        </div>
+        <label class="label-pink">Target Dana (Rp) 💰</label>
+        <input class="input-pink" id="input-target" type="number" placeholder="cth: 5000000" min="1">
+        <div style="margin-top:20px;">
+          <label class="label-pink">Jumlah Anggota 👯‍♀️</label>
+          <input class="input-pink" id="input-jumlah" type="number" placeholder="cth: 3" min="1" max="12" oninput="generateMemberInputs()">
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button class="btn-outline" onclick="goStep1()">← Kembali</button>
+          <button class="btn-pink flex-1" onclick="goStep3()">Lanjut →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Nama Anggota -->
+      <div id="step-3" class="glass rounded-3xl p-8" style="display:none">
+        <div class="text-center mb-6">
+          <span style="font-size:2rem">👯‍♀️</span>
+          <h2 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.3rem;color:#880e4f;margin-top:8px;">Nama Anggota</h2>
+          <p style="color:#c2185b;font-size:0.88rem;margin-top:4px;">Siapa saja yang ikut menabung? 🌸</p>
+        </div>
+        <div id="member-inputs" class="flex flex-col gap-3 max-h-64 overflow-y-auto pr-1"></div>
+        <div class="flex gap-3 mt-6">
+          <button class="btn-outline" onclick="goStep2()">← Kembali</button>
+          <button class="btn-pink flex-1" onclick="startTabungan()">Mulai Menabung! 🌸</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD PAGE ===== -->
+<div id="page-dashboard" class="page" style="display:none">
+  <!-- Nav -->
+  <nav class="glass" style="border-bottom:1.5px solid var(--glass-border);border-radius:0;">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span style="font-size:1.5rem">🌸</span>
+        <div>
+          <div id="nav-title" style="font-family:'Poppins',sans-serif;font-weight:700;color:#880e4f;font-size:0.95rem;line-height:1.2"></div>
+          <div style="font-size:0.7rem;color:#f48fb1;font-weight:500">Tabungan Bersama</div>
+        </div>
+      </div>
+      <button onclick="showResetModal()" style="background:rgba(233,30,140,0.08);border:none;border-radius:50px;padding:7px 16px;color:#e91e8c;font-family:'Quicksand',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(233,30,140,0.15)'" onmouseout="this.style.background='rgba(233,30,140,0.08)'">Atur Ulang</button>
+    </div>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4 py-6 flex-1">
+    <!-- Tab navigation -->
+    <div class="glass rounded-2xl p-1.5 flex gap-1 mb-6" style="width:fit-content">
+      <button class="tab-btn active" id="tab-tabungan" onclick="switchTab('tabungan')">💰 Tabungan</button>
+      <button class="tab-btn" id="tab-wisata" onclick="switchTab('wisata')">✈️ Destinasi Impian</button>
+    </div>
+
+    <!-- TAB: TABUNGAN -->
+    <div id="content-tabungan">
+      <!-- Progress card -->
+      <div class="glass rounded-3xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div style="font-size:0.8rem;color:#f48fb1;font-weight:700;text-transform:uppercase;letter-spacing:0.08em">Progress Tabungan 💕</div>
+            <div id="dash-title" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.3rem;color:#880e4f;margin-top:2px;"></div>
+          </div>
+          <div style="text-align:right">
+            <div id="persen-text" style="font-family:'Poppins',sans-serif;font-weight:700;font-size:2rem;background:linear-gradient(135deg,#f48fb1,#e91e8c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">0%</div>
+            <div style="font-size:0.75rem;color:#f48fb1">tercapai</div>
+          </div>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-bar" style="width:0%"></div>
+        </div>
+        <div class="flex justify-between mt-3">
+          <div>
+            <div style="font-size:0.72rem;color:#f48fb1;font-weight:700">TERKUMPUL</div>
+            <div id="total-text" style="font-family:'Poppins',sans-serif;font-weight:700;color:#e91e8c;font-size:1.05rem;">Rp 0</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:0.72rem;color:#f48fb1;font-weight:700">TARGET</div>
+            <div id="target-text" style="font-family:'Poppins',sans-serif;font-weight:700;color:#880e4f;font-size:1.05rem;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Member grid -->
+      <div id="member-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- TAB: WISATA -->
+    <div id="content-wisata" style="display:none">
+      <div class="glass rounded-3xl p-6 mb-6">
+        <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#880e4f;font-size:1.1rem;margin-bottom:4px;">✈️ Destinasi Impian</h3>
+        <p style="color:#c2185b;font-size:0.85rem;margin-bottom:16px;">Tambahkan tempat impian kalian sebagai motivasi menabung! 🗺️</p>
+        <div class="flex gap-3">
+          <input class="input-pink flex-1" id="input-wisata" type="text" placeholder="cth: Pantai di Bali, Menara Eiffel..." onkeydown="if(event.key==='Enter') tambahDestinasi()">
+          <button class="btn-pink" onclick="tambahDestinasi()" style="padding:12px 20px;white-space:nowrap">+ Tambah</button>
+        </div>
+        <div id="wisata-loading" style="display:none;text-align:center;padding:16px;color:#f48fb1;font-size:0.9rem;">
+          <div style="font-size:1.5rem;animation:spin 1s linear infinite;display:inline-block;margin-bottom:4px;">🌸</div><br>Mencari foto cantik...
+        </div>
+      </div>
+
+      <div id="destinasi-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Destination cards rendered here -->
+      </div>
+
+      <div id="empty-wisata" style="text-align:center;padding:40px;color:#f48fb1;">
+        <div style="font-size:3rem;margin-bottom:12px;">🗺️</div>
+        <p style="font-weight:700;color:#c2185b;">Belum ada destinasi impian</p>
+        <p style="font-size:0.85rem;margin-top:4px;">Tambahkan tempat wisata impian kalian di atas!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer style="text-align:center;padding:24px;color:#c2185b;font-size:0.85rem;font-weight:600;background:rgba(255,255,255,0.25);border-top:1.5px solid var(--glass-border);">
+    <span class="flower">🌸</span> Dari Caca Cantik untuk semua 🌸 <span class="flower" style="animation-direction:reverse">🌸</span>
+  </footer>
+</div>
+
+</div>
+
+<!-- Setor Modal -->
+<div id="modal-setor" class="modal-overlay" style="display:none">
+  <div class="modal-box">
+    <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#880e4f;font-size:1.2rem;margin-bottom:4px;">💰 Setor Tabungan</h3>
+    <p id="modal-setor-name" style="color:#c2185b;font-size:0.9rem;margin-bottom:20px;"></p>
+    <label class="label-pink">Jumlah Setoran (Rp)</label>
+    <input class="input-pink" id="modal-setor-input" type="number" placeholder="cth: 100000" min="1" onkeydown="if(event.key==='Enter') konfirmasiSetor()">
+    <div class="flex gap-3 mt-6">
+      <button class="btn-outline flex-1" onclick="closeModal('modal-setor')">Batal</button>
+      <button class="btn-pink flex-1" onclick="konfirmasiSetor()">Setor! 💖</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reset Modal -->
+<div id="modal-reset" class="modal-overlay" style="display:none">
+  <div class="modal-box" style="text-align:center">
+    <div style="font-size:2.5rem;margin-bottom:12px;">🌷</div>
+    <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#880e4f;font-size:1.1rem;margin-bottom:8px;">Atur Ulang Tabungan?</h3>
+    <p style="color:#c2185b;font-size:0.88rem;margin-bottom:24px;">Semua data tabungan akan dihapus.<br>Yakin ingin memulai dari awal?</p>
+    <div class="flex gap-3">
+      <button class="btn-outline flex-1" onclick="closeModal('modal-reset')">Tidak</button>
+      <button class="btn-pink flex-1" onclick="resetTabungan()">Ya, Atur Ulang</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Destination Modal -->
+<div id="modal-del-dest" class="modal-overlay" style="display:none">
+  <div class="modal-box" style="text-align:center">
+    <div style="font-size:2rem;margin-bottom:12px;">🗺️</div>
+    <h3 style="font-family:'Poppins',sans-serif;font-weight:700;color:#880e4f;font-size:1.1rem;margin-bottom:8px;">Hapus Destinasi?</h3>
+    <p id="del-dest-name" style="color:#c2185b;font-size:0.88rem;margin-bottom:24px;"></p>
+    <div class="flex gap-3">
+      <button class="btn-outline flex-1" onclick="closeModal('modal-del-dest')">Batal</button>
+      <button class="btn-pink flex-1" onclick="konfirmasiHapusDestinasi()">Hapus</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let state = {
+  namaTabungan: '',
+  target: 0,
+  anggota: [], // [{nama, tabungan}]
+  destinasi: [] // [{nama, img}]
+};
+
+let currentSetorIdx = null;
+let currentDelDestIdx = null;
+
+// ===== LOCAL STORAGE =====
+function saveState() {
+  localStorage.setItem('tabungan_bersama_v2', JSON.stringify(state));
+}
+function loadState() {
+  const saved = localStorage.getItem('tabungan_bersama_v2');
+  if (saved) {
+    state = JSON.parse(saved);
+    return true;
+  }
+  return false;
+}
+
+// ===== INIT =====
+window.onload = function() {
+  if (loadState() && state.namaTabungan) {
+    showDashboard();
+  } else {
+    showPage('setup');
+  }
+
+  // Char counter
+  const inp = document.getElementById('input-nama-tabungan');
+  inp.addEventListener('input', function() {
+    document.getElementById('char-count').textContent = this.value.length + '/50';
+  });
+};
+
+// ===== SETUP FLOW =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  const el = document.getElementById('page-' + name);
+  el.style.display = 'block';
+  el.classList.add('active');
+}
+
+function goStep2() {
+  const nama = document.getElementById('input-nama-tabungan').value.trim();
+  if (!nama) { showNotif('💕 Isi dulu nama tabungannya ya!'); return; }
+  document.getElementById('step-1').style.display = 'none';
+  document.getElementById('step-2').style.display = 'block';
+  document.getElementById('dot-1').classList.remove('active');
+  document.getElementById('dot-2').classList.add('active');
+}
+function goStep1() {
+  document.getElementById('step-2').style.display = 'none';
+  document.getElementById('step-1').style.display = 'block';
+  document.getElementById('dot-2').classList.remove('active');
+  document.getElementById('dot-1').classList.add('active');
+}
+function goStep3() {
+  const target = parseInt(document.getElementById('input-target').value);
+  const jumlah = parseInt(document.getElementById('input-jumlah').value);
+  if (!target || target < 1) { showNotif('💕 Isi target dana dulu ya!'); return; }
+  if (!jumlah || jumlah < 1 || jumlah > 12) { showNotif('💕 Jumlah anggota 1-12 orang ya!'); return; }
+  generateMemberInputs();
+  document.getElementById('step-2').style.display = 'none';
+  document.getElementById('step-3').style.display = 'block';
+  document.getElementById('dot-2').classList.remove('active');
+  document.getElementById('dot-3').classList.add('active');
+}
+function goStep2Back() {
+  document.getElementById('step-3').style.display = 'none';
+  document.getElementById('step-2').style.display = 'block';
+  document.getElementById('dot-3').classList.remove('active');
+  document.getElementById('dot-2').classList.add('active');
+}
+
+function generateMemberInputs() {
+  const jumlah = parseInt(document.getElementById('input-jumlah').value);
+  if (!jumlah || jumlah < 1) return;
+  const container = document.getElementById('member-inputs');
+  const icons = ['🌸','🌷','💕','✨','🦋','🌺','💖','🌼','🍓','🎀','🌙','⭐'];
+  container.innerHTML = '';
+  for (let i = 0; i < jumlah; i++) {
+    const icon = icons[i % icons.length];
+    container.innerHTML += `
+      <div class="flex items-center gap-3">
+        <span style="font-size:1.3rem">${icon}</span>
+        <input class="input-pink flex-1 member-name-input" type="text" placeholder="Nama Anggota ${i+1}" maxlength="30">
+      </div>`;
+  }
+}
+
+function startTabungan() {
+  const nama = document.getElementById('input-nama-tabungan').value.trim();
+  const target = parseInt(document.getElementById('input-target').value);
+  const inputs = document.querySelectorAll('.member-name-input');
+  const anggota = [];
+  for (let inp of inputs) {
+    const n = inp.value.trim();
+    if (!n) { showNotif('💕 Isi semua nama anggota dulu ya!'); return; }
+    anggota.push({ nama: n, tabungan: 0 });
+  }
+  state.namaTabungan = nama;
+  state.target = target;
+  state.anggota = anggota;
+  state.destinasi = state.destinasi || [];
+  saveState();
+  showDashboard();
+  showNotif('🌸 Tabungan berhasil dibuat! Yuk mulai menabung!');
+  launchConfetti();
+}
+
+// ===== DASHBOARD =====
+function showDashboard() {
+  showPage('dashboard');
+  renderDashboard();
+}
+
+function renderDashboard() {
+  document.getElementById('nav-title').textContent = state.namaTabungan;
+  document.getElementById('dash-title').textContent = state.namaTabungan;
+  document.getElementById('target-text').textContent = formatRupiah(state.target);
+
+  const total = state.anggota.reduce((s, a) => s + a.tabungan, 0);
+  const persen = Math.min(100, Math.round((total / state.target) * 100));
+
+  document.getElementById('total-text').textContent = formatRupiah(total);
+  document.getElementById('persen-text').textContent = persen + '%';
+
+  setTimeout(() => {
+    document.getElementById('progress-bar').style.width = persen + '%';
+  }, 200);
+
+  renderMemberGrid();
+  renderDestinasiGrid();
+}
+
+function renderMemberGrid() {
+  const grid = document.getElementById('member-grid');
+  const icons = ['🌸','🌷','💕','✨','🦋','🌺','💖','🌼','🍓','🎀','🌙','⭐'];
+  const colors = [
+    'linear-gradient(135deg,#fce4ec,#f8bbd0)',
+    'linear-gradient(135deg,#f8bbd0,#ffd6e7)',
+    'linear-gradient(135deg,#fff0f5,#fce4ec)',
+    'linear-gradient(135deg,#ffd6e7,#fce4ec)',
+    'linear-gradient(135deg,#f8bbd0,#fce4ec)',
+    'linear-gradient(135deg,#ffe0ef,#f8bbd0)',
+  ];
+  grid.innerHTML = '';
+  state.anggota.forEach((a, i) => {
+    const icon = icons[i % icons.length];
+    const color = colors[i % colors.length];
+    grid.innerHTML += `
+      <div class="member-card glass" style="padding:22px;background:${color};border:1.5px solid var(--glass-border);box-shadow:var(--shadow-card);">
+        <div class="flex items-center justify-between mb-3">
+          <div style="font-size:2rem">${icon}</div>
+          <div style="background:rgba(233,30,140,0.1);border-radius:50px;padding:4px 12px;font-size:0.75rem;font-weight:700;color:#e91e8c;">Anggota ${i+1}</div>
+        </div>
+        <input class="editable-name" value="${escHtml(a.nama)}" title="Klik untuk edit nama" onchange="editNama(${i}, this.value)" maxlength="30">
+        <div style="font-size:0.72rem;color:#f48fb1;margin-top:2px;font-weight:600;">💡 klik nama untuk edit</div>
+        <div style="margin-top:14px;margin-bottom:4px;">
+          <div style="font-size:0.72rem;color:#f48fb1;font-weight:700;text-transform:uppercase;letter-spacing:0.06em">Tabungan</div>
+          <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:1.25rem;background:linear-gradient(135deg,#f48fb1,#e91e8c);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${formatRupiah(a.tabungan)}</div>
+        </div>
+        <button class="btn-pink w-full mt-3" style="font-size:0.88rem;padding:10px 20px" onclick="openSetor(${i})">+ Setor 💰</button>
+      </div>`;
+  });
+}
+
+function editNama(idx, newName) {
+  if (!newName.trim()) { showNotif('💕 Nama tidak boleh kosong!'); return; }
+  state.anggota[idx].nama = newName.trim();
+  saveState();
+  document.getElementById('modal-setor-name') && void 0;
+}
+
+// ===== SETOR =====
+function openSetor(idx) {
+  currentSetorIdx = idx;
+  document.getElementById('modal-setor-name').textContent = 'Untuk: ' + state.anggota[idx].nama + ' 🌸';
+  document.getElementById('modal-setor-input').value = '';
+  document.getElementById('modal-setor').style.display = 'flex';
+  setTimeout(() => document.getElementById('modal-setor-input').focus(), 100);
+}
+function konfirmasiSetor() {
+  const jumlah = parseInt(document.getElementById('modal-setor-input').value);
+  if (!jumlah || jumlah < 1) { showNotif('💕 Isi jumlah setorannya dulu!'); return; }
+  state.anggota[currentSetorIdx].tabungan += jumlah;
+  saveState();
+  closeModal('modal-setor');
+  renderDashboard();
+  showNotif(`💖 Berhasil setor ${formatRupiah(jumlah)}! Semangat!`);
+  const total = state.anggota.reduce((s,a) => s+a.tabungan, 0);
+  if (total >= state.target) {
+    setTimeout(() => { showNotif('🎉 Target tercapai! Selamat! Saatnya liburan! 🌴'); launchConfetti(); launchConfetti(); }, 700);
+  }
+}
+
+// ===== DESTINASI =====
+function switchTab(tab) {
+  document.getElementById('content-tabungan').style.display = tab === 'tabungan' ? 'block' : 'none';
+  document.getElementById('content-wisata').style.display = tab === 'wisata' ? 'block' : 'none';
+  document.getElementById('tab-tabungan').classList.toggle('active', tab === 'tabungan');
+  document.getElementById('tab-wisata').classList.toggle('active', tab === 'wisata');
+}
+
+function tambahDestinasi() {
+  const input = document.getElementById('input-wisata');
+  const nama = input.value.trim();
+  if (!nama) { showNotif('💕 Ketik nama destinasi dulu ya!'); return; }
+
+  // Try multiple image sources
+  const imgUrl = `https://source.unsplash.com/600x400/?${encodeURIComponent(nama)},travel,tourism&sig=${Date.now()}`;
+
+  document.getElementById('wisata-loading').style.display = 'block';
+  input.value = '';
+  input.disabled = true;
+
+  // Test if image loads
+  const testImg = new Image();
+  testImg.onload = function() {
+    state.destinasi.push({ nama: nama, img: imgUrl });
+    saveState();
+    document.getElementById('wisata-loading').style.display = 'none';
+    input.disabled = false;
+    renderDestinasiGrid();
+    showNotif('🗺️ Destinasi ' + nama + ' ditambahkan!');
+  };
+  testImg.onerror = function() {
+    // Fallback to picsum with keyword hash
+    const fallback = `https://picsum.photos/seed/${encodeURIComponent(nama)}/600/400`;
+    state.destinasi.push({ nama: nama, img: fallback });
+    saveState();
+    document.getElementById('wisata-loading').style.display = 'none';
+    input.disabled = false;
+    renderDestinasiGrid();
+    showNotif('🗺️ Destinasi ' + nama + ' ditambahkan!');
+  };
+  testImg.src = imgUrl;
+}
+
+function renderDestinasiGrid() {
+  const grid = document.getElementById('destinasi-grid');
+  const empty = document.getElementById('empty-wisata');
+  if (!state.destinasi || state.destinasi.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = '';
+  state.destinasi.forEach((d, i) => {
+    grid.innerHTML += `
+      <div class="dest-card glass" style="box-shadow:var(--shadow-card);">
+        <div style="position:relative;overflow:hidden;border-radius:20px;">
+          <img src="${d.img}" alt="${escHtml(d.nama)}" style="width:100%;height:180px;object-fit:cover;display:block;background:#fce4ec;"
+            onerror="this.src='https://picsum.photos/seed/${encodeURIComponent(d.nama)}${i}/600/400'">
+          <div class="dest-overlay">
+            <div style="font-weight:700;font-size:0.95rem;text-shadow:0 1px 4px rgba(0,0,0,0.4)">${escHtml(d.nama)}</div>
+            <div style="font-size:0.75rem;opacity:0.85;margin-top:2px">Destinasi Impian ✈️</div>
+          </div>
+          <button onclick="showHapusDestinasi(${i})" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.85);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🗑️</button>
+        </div>
+      </div>`;
+  });
+}
+
+function showHapusDestinasi(idx) {
+  currentDelDestIdx = idx;
+  document.getElementById('del-dest-name').textContent = 'Hapus "' + state.destinasi[idx].nama + '" dari daftar impian?';
+  document.getElementById('modal-del-dest').style.display = 'flex';
+}
+function konfirmasiHapusDestinasi() {
+  state.destinasi.splice(currentDelDestIdx, 1);
+  saveState();
+  closeModal('modal-del-dest');
+  renderDestinasiGrid();
+  showNotif('🗺️ Destinasi dihapus');
+}
+
+// ===== RESET =====
+function showResetModal() { document.getElementById('modal-reset').style.display = 'flex'; }
+function resetTabungan() {
+  localStorage.removeItem('tabungan_bersama_v2');
+  state = { namaTabungan:'', target:0, anggota:[], destinasi:[] };
+  closeModal('modal-reset');
+  // Reset form
+  document.getElementById('input-nama-tabungan').value = '';
+  document.getElementById('input-target').value = '';
+  document.getElementById('input-jumlah').value = '';
+  document.getElementById('member-inputs').innerHTML = '';
+  document.getElementById('step-1').style.display = 'block';
+  document.getElementById('step-2').style.display = 'none';
+  document.getElementById('step-3').style.display = 'none';
+  document.querySelectorAll('.step-dot').forEach((d,i) => { d.classList.toggle('active', i===0); });
+  showPage('setup');
+}
+
+// ===== HELPERS =====
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', function(e) { if (e.target === this) this.style.display = 'none'; });
+});
+
+function formatRupiah(n) {
+  return 'Rp ' + (n || 0).toLocaleString('id-ID');
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showNotif(msg) {
+  const existing = document.querySelector('.notif');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = 'opacity 0.4s, transform 0.4s';
+    el.style.opacity = '0';
+    el.style.transform = 'translateX(40px)';
+    setTimeout(() => el.remove(), 400);
+  }, 3000);
+}
+
+function launchConfetti() {
+  const colors = ['#f48fb1','#e91e8c','#ffd6e7','#c2185b','#fff','#fce4ec','#ad1457'];
+  for (let i = 0; i < 40; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.top = '-20px';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (8 + Math.random() * 8) + 'px';
+    el.style.height = (8 + Math.random() * 8) + 'px';
+    el.style.animationDelay = Math.random() * 0.8 + 's';
+    el.style.animationDuration = (1.5 + Math.random()) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+}
+</script>
+</body>
+</html>
